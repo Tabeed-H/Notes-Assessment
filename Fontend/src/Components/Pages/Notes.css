@@ -1,0 +1,47 @@
+.notes-container {
+  width: 80vw;
+  height: 90%;
+  overflow: scroll;
+  margin: 20px;
+  text-align: center;
+}
+.notes-container::-webkit-scrollbar {
+  scrollbar-width: none;
+}
+
+.grid-container {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 10px 10px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    ". . ."
+    ". . ."
+    ". . .";
+}
+.pinned-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+.pagination-container {
+  margin-top: 20px;
+}
+
+button {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 12px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+button.active {
+  background-color: rgba(113, 204, 255, 0.38);
+  color: white;
+}

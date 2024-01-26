@@ -1,33 +1,19 @@
 import React, { useState } from "react";
-import "./NoteModal.css";
+import "./EditNoteModal.css";
 
-const NoteModal = ({ isOpen, onClose, onSave, onError }) => {
-  const [title, setTitle] = useState("");
-  const [tagline, setTagline] = useState("");
-  const [body, setBody] = useState("");
+const EditNoteModal = ({ isOpen, onClose, onSave, note }) => {
+  const [editedNote, setEditedNote] = useState({ ...note });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedNote((prevNote) => ({
+      ...prevNote,
+      [name]: value,
+    }));
+  };
 
   const handleSave = () => {
-    if (title.length === 0) {
-      onError({
-        title: "Error!",
-        message: "Title is empty!",
-        details: "You Should give your note a title..:)",
-      });
-      return;
-    }
-
-    onSave({
-      _id: 1234,
-      title,
-      tagline,
-      body,
-      isDeleted: false,
-      isPinned: false,
-    });
-    setTitle("");
-    setTagline("");
-    setBody("");
-
+    onSave(editedNote);
     onClose();
   };
 
@@ -37,7 +23,7 @@ const NoteModal = ({ isOpen, onClose, onSave, onError }) => {
         <div className="modal-container" onClick={onClose}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <div className="modal-title">Add New Note</div>
+              <div className="modal-title">Edit Note</div>
               <button className="close-btn" onClick={onClose}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -57,19 +43,22 @@ const NoteModal = ({ isOpen, onClose, onSave, onError }) => {
               <label>Title:</label>
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={editedNote.title}
+                onChange={(e) => handleInputChange(e)}
+                name="title"
               />
               <label>Tagline Line</label>
               <textarea
-                value={tagline}
-                onChange={(e) => setTagline(e.target.value)}
+                value={editedNote.tagline}
+                onChange={(e) => handleInputChange(e)}
+                name="tagline"
               />
 
               <label>Body</label>
               <textarea
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
+                value={editedNote.body}
+                onChange={(e) => handleInputChange(e)}
+                name="body"
               />
             </div>
             <div className="modal-footer">
@@ -84,4 +73,4 @@ const NoteModal = ({ isOpen, onClose, onSave, onError }) => {
   );
 };
 
-export default NoteModal;
+export default EditNoteModal;
