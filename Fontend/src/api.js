@@ -1,4 +1,4 @@
-const URL = "https://notes-backend-v2tu.onrender.com/";
+const URL = "https://notes-backend-v2tu.onrender.com";
 export const fetchNotes = async () => {
   try {
     const response = await fetch(`${URL}/api/notes`);
