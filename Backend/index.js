@@ -1,5 +1,4 @@
-// index.js
-
+require("dotenv").config();
 const express = require("express");
 const admin = require("firebase-admin");
 const cors = require("cors");
@@ -8,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require("C:/Users/Tabeed/OneDrive/Documents/notes-ecac3-firebase-adminsdk-nnp46-e1c070a296.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
