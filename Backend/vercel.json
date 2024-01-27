@@ -1,6 +1,5 @@
 {
   "version": 2,
   "framework": "express",
-  "runtime": "nodejs16",
   "entrypoint": "index.js"
 }
