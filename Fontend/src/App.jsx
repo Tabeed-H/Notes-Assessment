@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { fetchNotes, addNewNote, deleteNote, updateNote, pinNote } from "./api";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Notes from "./Components/Pages/Notes";
 import Trash from "./Components/Pages/Trash";
@@ -9,87 +10,11 @@ import ErrorModal from "./Components/Modals/ErrorModal";
 import EditNoteModal from "./Components/Modals/EditNoteModal";
 const App = () => {
   // -------------------------------------------Notes------------------------------
-  const [notes, setNotes] = useState([
-    {
-      _id: 1,
-      title: "Note 1",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: false,
-    },
-    {
-      _id: 2,
-      title: "Note 2",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: true,
-    },
-    {
-      _id: 3,
-      title: "Note 3",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: false,
-    },
-    {
-      _id: 4,
-      title: "Note 4",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: true,
-    },
-    {
-      _id: 5,
-      title: "Note 5",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: false,
-    },
-    {
-      _id: 6,
-      title: "Note 6",
-      tagline: "This is note.",
-      body: "This is the body of Note i am going to make the body of this onte a bit big so to tess the scroll and height and shit what if i increase it even more evne more functk it we type shia;dklfjasl;dkfha;sdfj;ahdflkjahsdlfkjahldjkfa;klfdlakjhdflkjahslfdkjhaldjfh",
-      isDeleted: false,
-      isPinned: false,
-    },
-    {
-      _id: 7,
-      title: "Note 7",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: false,
-    },
-    {
-      _id: 8,
-      title: "Note 8",
-      tagline: "This is note.",
-      body: "This is the body of Note",
-      isDeleted: false,
-      isPinned: false,
-    },
-  ]);
-  const handleSaveNote = (newNote) => {
-    setNotes((prevNotes) => [...prevNotes, newNote]);
-  };
-
-  const handleNoteDelete = (note) => {
-    console.log("delete" + note._id);
-  };
+  const [notes, setNotes] = useState([]);
 
   const handleNoteEdit = (note) => {
     openEditNoteModal(note);
-    console.log("Edit" + note._id);
-  };
-
-  const handleNotePin = (note) => {
-    console.log("pin" + note._id);
+    console.log("Edit" + note.id);
   };
 
   // -------------------------------------------Errors-----------------------------
@@ -121,12 +46,6 @@ const App = () => {
   // state for add note modal
   const [noteModalStatus, setNoteModalStatus] = useState(false);
 
-  // handle new Notes
-  const addNewNote = (note) => {
-    console.log(note);
-    handleSaveNote(note);
-  };
-
   // functions for noteModal
   const openNoteModal = () => {
     setNoteModalStatus(true);
@@ -153,11 +72,83 @@ const App = () => {
     setEditNoteModalStatus(false);
   };
 
-  // Function to save edited note
-  const saveEditedNote = (editedNote) => {
-    // Implement your logic to save the edited note
-    console.log("Edited Note:", editedNote);
+  // ----------------------------------api calls----------------------------
+  const handleFetchNotes = async () => {
+    try {
+      const fetchedNotes = await fetchNotes();
+      setNotes(fetchedNotes);
+    } catch (error) {
+      console.error("Failed to fetch notes:", error.message);
+      handleNoteModalError({
+        title: "Error Occured",
+        message: "Error while fetching notes",
+        details: error.message,
+      });
+    }
   };
+
+  const handleSaveNote = async (newNote) => {
+    try {
+      const noteId = await addNewNote(newNote);
+      console.log("New note added with ID:", noteId);
+
+      // Fetch updated notes after adding a new note
+      await handleFetchNotes();
+    } catch (error) {
+      // Handle error if needed
+      console.error("Failed to add a new note:", error.message);
+      handleNoteModalError({
+        title: "Error Occured",
+        message: "Error while Adding Note!",
+        details: error.message,
+      });
+    }
+  };
+
+  const handleNoteDelete = async (note) => {
+    try {
+      await deleteNote(note.id);
+      // Fetch updated notes after adding a new note
+      await handleFetchNotes();
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      handleNoteModalError({
+        title: "Error Occured",
+        message: "Error while Deleting Note!",
+        details: error.message,
+      });
+    }
+  };
+
+  // Function to save edited note
+  const saveEditedNote = async (editedNote) => {
+    try {
+      await updateNote(editedNote); // Call the updateNote function from api.js
+      await handleFetchNotes(); // Fetch updated notes from the backend
+    } catch (error) {
+      console.error("Error updating note:", error);
+      handleNoteModalError({
+        title: "Error Occured",
+        message: "Error while Updating Note!",
+        details: error.message,
+      });
+    }
+  };
+
+  const handleNotePin = async (note) => {
+    try {
+      await pinNote(note); // Call the pinNote function from api.js
+      await handleFetchNotes(); // Fetch updated notes from the backend
+    } catch (error) {
+      console.error("Error pinning/unpinning note:", error);
+      // Handle error
+    }
+  };
+
+  // Fetch notes when the component mounts
+  useEffect(() => {
+    handleFetchNotes();
+  }, []); // Empty dependency array ensures it only runs once
 
   return (
     <Router>
@@ -165,7 +156,7 @@ const App = () => {
         <NoteModal
           isOpen={noteModalStatus}
           onClose={closeNoteModal}
-          onSave={addNewNote}
+          onSave={handleSaveNote}
           onError={handleNoteModalError}
         />
       )}

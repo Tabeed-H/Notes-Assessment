@@ -17,7 +17,6 @@ const NoteModal = ({ isOpen, onClose, onSave, onError }) => {
     }
 
     onSave({
-      _id: 1234,
       title,
       tagline,
       body,

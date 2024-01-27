@@ -60,6 +60,7 @@ const Notes = ({ notes, onEdit, onDelete, onPin }) => {
                 note={note}
                 onNoteEdit={handleEdit}
                 onNoteDelete={handleDelete}
+                onNotePin={handlePin}
               />
             ))}
           </div>
