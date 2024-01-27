@@ -46,7 +46,7 @@ export const deleteNote = async (noteId) => {
     }
 
     const data = await response.json();
-    return data.message; // If you want to handle the success message
+    return data.message;
   } catch (error) {
     console.error("Error deleting note:", error.message);
     throw error;

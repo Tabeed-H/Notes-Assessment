@@ -10,14 +10,16 @@ import ErrorModal from "./Components/Modals/ErrorModal";
 import EditNoteModal from "./Components/Modals/EditNoteModal";
 const App = () => {
   // -------------------------------------------Notes------------------------------
+  // functions and state dealing with local state of Notes
   const [notes, setNotes] = useState([]);
 
+  // Opens and call function to edit note more like a middle ware function and be removed
   const handleNoteEdit = (note) => {
     openEditNoteModal(note);
-    console.log("Edit" + note.id);
   };
 
   // -------------------------------------------Errors-----------------------------
+  // functions and states for Error modal
   // State for Error modal
   const [errorStatus, setErrorStatus] = useState(false);
 
@@ -34,7 +36,6 @@ const App = () => {
       details: errorMessage.details,
     }));
     setErrorStatus(true);
-    console.log(error);
   };
 
   const closeErrorModal = () => {
@@ -43,19 +44,22 @@ const App = () => {
   };
 
   // ------------------------------------------Notes Modal--------------------------------
+  // functions and state for new note modal
   // state for add note modal
   const [noteModalStatus, setNoteModalStatus] = useState(false);
 
-  // functions for noteModal
+  // functions to open noteModal
   const openNoteModal = () => {
     setNoteModalStatus(true);
   };
 
+  // function to close noteModal
   const closeNoteModal = () => {
     setNoteModalStatus(false);
   };
 
   // ------------------------------------------Edit--------------------------------
+  // functions and states for handling edit note
   // State for EditNoteModal
   const [editNoteModalStatus, setEditNoteModalStatus] = useState(false);
   const [selectedNoteForEdit, setSelectedNoteForEdit] = useState({});
@@ -73,12 +77,12 @@ const App = () => {
   };
 
   // ----------------------------------api calls----------------------------
+  // fetch all notes
   const handleFetchNotes = async () => {
     try {
       const fetchedNotes = await fetchNotes();
       setNotes(fetchedNotes);
     } catch (error) {
-      console.error("Failed to fetch notes:", error.message);
       handleNoteModalError({
         title: "Error Occured",
         message: "Error while fetching notes",
@@ -87,16 +91,14 @@ const App = () => {
     }
   };
 
+  // save note
   const handleSaveNote = async (newNote) => {
     try {
       const noteId = await addNewNote(newNote);
-      console.log("New note added with ID:", noteId);
 
       // Fetch updated notes after adding a new note
       await handleFetchNotes();
     } catch (error) {
-      // Handle error if needed
-      console.error("Failed to add a new note:", error.message);
       handleNoteModalError({
         title: "Error Occured",
         message: "Error while Adding Note!",
@@ -105,13 +107,12 @@ const App = () => {
     }
   };
 
+  // delete note
   const handleNoteDelete = async (note) => {
     try {
       await deleteNote(note.id);
-      // Fetch updated notes after adding a new note
       await handleFetchNotes();
     } catch (error) {
-      console.error("Error deleting note:", error);
       handleNoteModalError({
         title: "Error Occured",
         message: "Error while Deleting Note!",
@@ -123,10 +124,9 @@ const App = () => {
   // Function to save edited note
   const saveEditedNote = async (editedNote) => {
     try {
-      await updateNote(editedNote); // Call the updateNote function from api.js
-      await handleFetchNotes(); // Fetch updated notes from the backend
+      await updateNote(editedNote);
+      await handleFetchNotes();
     } catch (error) {
-      console.error("Error updating note:", error);
       handleNoteModalError({
         title: "Error Occured",
         message: "Error while Updating Note!",
@@ -135,20 +135,24 @@ const App = () => {
     }
   };
 
+  // handle pin/unpin note
   const handleNotePin = async (note) => {
     try {
-      await pinNote(note); // Call the pinNote function from api.js
-      await handleFetchNotes(); // Fetch updated notes from the backend
+      await pinNote(note);
+      await handleFetchNotes();
     } catch (error) {
-      console.error("Error pinning/unpinning note:", error);
-      // Handle error
+      handleNoteModalError({
+        title: "Error Occured",
+        message: "Error while changing  Note status!",
+        details: error.message,
+      });
     }
   };
 
   // Fetch notes when the component mounts
   useEffect(() => {
     handleFetchNotes();
-  }, []); // Empty dependency array ensures it only runs once
+  }, []);
 
   return (
     <Router>

@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import "./EditNoteModal.css";
 
 const EditNoteModal = ({ isOpen, onClose, onSave, note }) => {
-  const [editedNote, setEditedNote] = useState({ ...note });
+  const [editedNote, setEditedNote] = useState({ ...note }); // stores the note in a state
 
+  // function to handle note change in local state
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedNote((prevNote) => ({
@@ -12,6 +13,7 @@ const EditNoteModal = ({ isOpen, onClose, onSave, note }) => {
     }));
   };
 
+  // handler to handle edited note save
   const handleSave = () => {
     onSave(editedNote);
     onClose();

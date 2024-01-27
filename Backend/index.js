@@ -1,20 +1,20 @@
-require("dotenv").config();
+require("dotenv").config(); // file requirement for processing env files
 const express = require("express");
 const admin = require("firebase-admin");
-const cors = require("cors");
+const cors = require("cors"); // to enable CORS
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Initialize Firebase Admin SDK
-const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY); // parsing secret key stored as JSON
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 // Enable CORS
-app.use(cors({ origin: "*" }));
-app.use(express.json());
+app.use(cors({ origin: "*" })); // enables requests from all addresses
+app.use(express.json()); // parse incomming data
 
 // Firestore Database Reference
 const db = admin.firestore();
@@ -23,6 +23,8 @@ const db = admin.firestore();
 app.get("/api/notes", async (req, res) => {
   try {
     const notesSnapshot = await db.collection("notes").get();
+
+    // from an object
     const notes = notesSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -37,7 +39,6 @@ app.get("/api/notes", async (req, res) => {
 // API Route to add a new note
 app.post("/api/add", async (req, res) => {
   try {
-    console.log(req.body);
     const { title, tagline, body, isDeleted, isPinned } = req.body;
 
     const notesRef = db.collection("notes");
@@ -59,7 +60,7 @@ app.post("/api/add", async (req, res) => {
   }
 });
 
-// API Route to delete a note
+// API Route to delete a note usin ID
 app.delete("/api/delete/:id", async (req, res) => {
   try {
     const noteId = req.params.id;
@@ -82,7 +83,7 @@ app.delete("/api/delete/:id", async (req, res) => {
   }
 });
 
-// API Route to Update Note
+// API Route to Update Note using ID
 app.put("/api/update/:id", async (req, res) => {
   try {
     const noteId = req.params.id;

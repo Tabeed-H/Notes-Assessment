@@ -4,33 +4,40 @@ import Note from "../Others/Note";
 import "./Notes.css";
 
 const Notes = ({ notes, onEdit, onDelete, onPin }) => {
-  const notesPerPage = 6;
+  const notesPerPage = 6; // max number of notes on one page
 
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = React.useState(1); // for pagination sets the current page number
 
+  // handler for changing pages when notes are >6
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
+  // handler to handle note edition
   const handleEdit = (note) => {
     onEdit(note);
   };
+
+  // handler to handel note deletion
   const handleDelete = (note) => {
     onDelete(note);
   };
+
+  // handler to handle note Pin/unpin
   const handlePin = (note) => {
     onPin(note);
   };
 
-  const startIndex = (currentPage - 1) * notesPerPage;
-  const endIndex = startIndex + notesPerPage;
-  const currentNotes = notes.slice(startIndex, endIndex);
+  // Pagination login
+  const startIndex = (currentPage - 1) * notesPerPage; // gets the starting page
+  const endIndex = startIndex + notesPerPage; // gets the ending page
+  const currentNotes = notes.slice(startIndex, endIndex); // current number of notes
 
   // Separate pinned and regular notes
   const pinnedNotes = notes.filter((note) => note.isPinned);
   const regularNotes = notes.filter((note) => !note.isPinned);
 
-  const totalPages = Math.ceil(regularNotes.length / notesPerPage);
+  const totalPages = Math.ceil(regularNotes.length / notesPerPage); // calculates the total number of pages
   return (
     <div className="notes-container">
       <h2>Notes</h2>
