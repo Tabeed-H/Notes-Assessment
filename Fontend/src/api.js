@@ -1,5 +1,4 @@
-const URL =
-  "https://notes-assessment-j6ir-ixh18ed0u-tabeed-hs-projects.vercel.app";
+const URL = "https://notes-backend-v2tu.onrender.com/";
 export const fetchNotes = async () => {
   try {
     const response = await fetch(`${URL}/api/notes`);
