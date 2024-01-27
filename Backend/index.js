@@ -39,6 +39,10 @@ const allowCors = (fn) => async (req, res) => {
 // Firestore Database Reference
 const db = admin.firestore();
 
+app.get("/", allowCors, async (req, res) => {
+  res.send("Hello World");
+});
+
 // API Route to Get All Notes
 app.get("/api/notes", allowCors, async (req, res) => {
   try {
