@@ -1,6 +1,8 @@
+const URL =
+  "https://notes-assessment-j6ir-ixh18ed0u-tabeed-hs-projects.vercel.app";
 export const fetchNotes = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/notes");
+    const response = await fetch(`${URL}/api/notes`);
     if (!response.ok) {
       throw new Error("Failed to fetch notes");
     }
@@ -14,7 +16,7 @@ export const fetchNotes = async () => {
 };
 export const addNewNote = async (note) => {
   try {
-    const response = await fetch("http://localhost:3000/api/add", {
+    const response = await fetch(`${URL}/api/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +38,7 @@ export const addNewNote = async (note) => {
 
 export const deleteNote = async (noteId) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/delete/${noteId}`, {
+    const response = await fetch(`${URL}/api/delete/${noteId}`, {
       method: "DELETE",
     });
 
@@ -53,16 +55,13 @@ export const deleteNote = async (noteId) => {
 };
 export const updateNote = async (editedNote) => {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/update/${editedNote.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(editedNote),
-      }
-    );
+    const response = await fetch(`${URL}/api/update/${editedNote.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedNote),
+    });
 
     if (!response.ok) {
       throw new Error("Failed to update note");
@@ -77,7 +76,7 @@ export const updateNote = async (editedNote) => {
 };
 export const pinNote = async (note) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/pin/${note.id}`, {
+    const response = await fetch(`${URL}/api/pin/${note.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
