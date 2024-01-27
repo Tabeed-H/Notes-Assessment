@@ -1,5 +1,4 @@
 {
   "version": 2,
-  "framework": "express",
-  "entrypoint": "index.js"
+  "framework": "express"
 }
